@@ -48,7 +48,7 @@ std::tuple<int, int, int> MontgomeryAlgorithm::prepare(int n) {
     }
 
     // Obliczanie n_prime ze wzoru: r * r^(-1) - n * n' = 1
-    int n_prime = (r * r_inv + 1) / n;
+    int n_prime = (r * r_inv - 1) / n;
 
     return std::make_tuple(k, r, n_prime);
 }
