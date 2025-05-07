@@ -13,7 +13,7 @@ public:
 
 private:
     // Metoda realizująca algorytm CIHS
-    static std::vector<int> CIHS(std::vector<int> a_bar, std::vector<int> b_bar, std::vector<int> n, std::vector<int> n_prime, int s, int w);
+    static std::vector<int> CIHS(std::vector<int> a, std::vector<int> b, std::vector<int> n, std::vector<int> n_prime, int s, int w);
 };
 
 

@@ -9,9 +9,12 @@
 #include "src/util/binary_helper.h"
 
 int main() {
-    std::cout << MontgomeryAlgorithm::monExp(7, 10, 13) << std::endl;
+    constexpr int a = 7, e = 10, n = 13;
 
-    std::vector<int> result = CIHSAlgorithm::monExp(7, 10, 13);
+    std::cout << "Result Montgomery: "  << MontgomeryAlgorithm::monExp(a, e, n) << std::endl;
+
+    const std::vector<int> result = CIHSAlgorithm::monExp(a, e, n);
+    std::cout << "Result CIHS: ";
     BinaryHelper::printVector(result);
 
     return 0;
