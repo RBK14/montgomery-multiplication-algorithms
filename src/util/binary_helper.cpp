@@ -4,6 +4,7 @@
 
 #include "binary_helper.h"
 
+#include <iostream>
 #include <vector>
 
 std::tuple<int, int> BinaryHelper::addc(const int x, const int y, int carry) {
@@ -40,5 +41,20 @@ std::vector<int> BinaryHelper::propagate(std::vector<int>& bits, int i, int carr
     }
 
     return bits;
+}
+
+std::vector<int> BinaryHelper::toBinaryVector(const int value, const int length) {
+    std::vector<int> bits;
+    for (int i = 0; i < length; ++i) {
+        bits.push_back((value >> i) & 1);
+    }
+    return bits;
+}
+
+void BinaryHelper::printVector(std::vector<int> vector) {
+    for (int i = 0; i < vector.size(); i++) {
+        std::cout << vector[i] << " ";
+    }
+    std::cout << std::endl;
 }
 

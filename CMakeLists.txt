@@ -10,4 +10,6 @@ add_executable(montg_mul_algorithms main.cpp
         src/algorithms/cihs_algorithm.h
         src/util/binary_helper.cpp
         src/util/binary_helper.h
+        src/algorithms/montgomery_algorithm.cpp
+        src/algorithms/montgomery_algorithm.h
 )

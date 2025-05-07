@@ -19,6 +19,10 @@ public:
     // Metoda propagowania przeniesienia
     static std::vector<int> propagate(std::vector<int>& bits, int i, int carry);
 
+    static std::vector<int> toBinaryVector(int value, int length);
+
+    static void printVector(std::vector<int> vector);
+
 };
 
 #endif //BINARY_HELPER_H

@@ -5,13 +5,15 @@
 #ifndef CIHS_ALGORITHM_H
 #define CIHS_ALGORITHM_H
 
-
+#include <vector>
 
 class CIHSAlgorithm {
 public:
+    static std::vector<int> monExp(int a, int e, int n, int w = 1);
 
+private:
     // Metoda realizująca algorytm CIHS
-    static int* cihsBinary(const int a[], const int b[], const int n[], const int np[], const int s, const int w);
+    static std::vector<int> CIHS(std::vector<int> a_bar, std::vector<int> b_bar, std::vector<int> n, std::vector<int> n_prime, int s, int w);
 };
 
 

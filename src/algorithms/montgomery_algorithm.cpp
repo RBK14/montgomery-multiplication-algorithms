@@ -12,9 +12,11 @@ int MontgomeryAlgorithm::monExp(const int a, const int e, const int n) {
 
     // Krok 1
     const int a_bar = (a * r) % n;
+    std::cout << a_bar << std::endl;
 
     // Krok 2
     int x_bar = (1 * r) % n;
+    std::cout << x_bar << std::endl;
 
     // Krok 3
     for (int i  = k - 1; i >= 0; i--) {
@@ -50,7 +52,6 @@ std::tuple<int, int, int> MontgomeryAlgorithm::prepare(int n) {
     // Obliczanie n_prime ze wzoru: r * r^(-1) - n * n' = 1
     int n_prime = (r * r_inv + 1) / n;
 
-    std::cout << k << " " << r << " " << n_prime << std::endl;
     return std::make_tuple(k, r, n_prime);
 }
 
