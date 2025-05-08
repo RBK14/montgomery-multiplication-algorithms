@@ -4,6 +4,7 @@
 
 #include "cihs_algorithm.h"
 
+#include <iostream>
 #include <tuple>
 
 #include "montgomery_algorithm.h"
@@ -32,10 +33,10 @@ std::vector<int> CIHSAlgorithm::monExp(const int a, const int e, const int n, co
         }
     }
 
-    std::vector<int> tab(s, 0);
-    tab[0] = 1;
+    std::vector<int> one_bin(s, 0);
+    one_bin[0] = 1;
 
-    std::vector<int> u = CIHS(x_bar, tab, n_bin, n_prime_bin, s, w);
+    std::vector<int> u = CIHS(x_bar, one_bin, n_bin, n_prime_bin, s, w);
     return u;
 }
 
@@ -48,7 +49,6 @@ std::vector<int> CIHSAlgorithm::CIHS(std::vector<int> a, std::vector<int> b, std
     // Krok 1
     for (int i = 0; i < s; i++) {
         carry = 0;
-
         for (int j = 0; j < s - i; j++) {
             const int x = t[i + j];
             const int y = a[j] * b[i];
@@ -63,7 +63,7 @@ std::vector<int> CIHSAlgorithm::CIHS(std::vector<int> a, std::vector<int> b, std
 
     // Krok 2
     for (int i = 0; i < s; i++) {
-        const int m = (t[0] * n_prime[0]) % (1 << w);
+        const int m = t[0] * n_prime[0] % (1 << w);
         std::tie(carry, sum) = BinaryHelper::addc(t[0], m*n[0]);
 
         for (int j = 1; j < s; j++) {
@@ -87,22 +87,32 @@ std::vector<int> CIHSAlgorithm::CIHS(std::vector<int> a, std::vector<int> b, std
         }
     }
 
-    for (int i = 0; i < s; i++) {
-        u[i] = t[i + s];
-    }
-
+    // Krok 3
     int borrow = 0, diff;
     for (int i = 0; i < s; i++) {
-        std::tie(borrow, diff) = BinaryHelper::subc(u[i], n[i], borrow);
-        t[i] = diff;
+        std::tie(borrow, diff) = BinaryHelper::subc(t[i], n[i], borrow);
+        u[i] = diff;
     }
 
-    std::tie(borrow, diff) = BinaryHelper::subc(u[s], borrow);
-    t[s] = diff;
-
-    if (borrow == 0) {
-        return t;
+    if (borrow == 1) {
+        return {t.begin(), t.begin() + s};
     }
 
-    return u;
+    return {u.begin(), u.begin() + s};
+
+    // u.assign(t.begin(), t.end());
+
+    // int borrow = 0, diff;
+    // for (int i = 0; i < s; i++) {
+    //     std::tie(borrow, diff) = BinaryHelper::subc(u[i], n[i], borrow);
+    //     t[i] = diff;
+    //     std::tie(borrow, diff) = BinaryHelper::subc(u[s], borrow);
+    //     t[s] = diff;
+    // }
+    //
+    // if (borrow == 0) {
+    //     return {t.begin(), t.begin() + s};
+    // }
+    //
+    // return {u.begin(), u.begin() + s};
 }
