@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <chrono>
 
@@ -7,18 +8,18 @@
 #include "src/util/binary_helper.h"
 
 int main() {
-    //CIHS
-    /*constexpr int a = 7, e = 10, n = 13;
+    // CIHS
+    // constexpr int a = 7, e = 10, n = 13;
 
-    std::cout << "Result Montgomery: "  << MontgomeryAlgorithm::monExp(a, e, n) << std::endl;
+    // std::cout << "Result Montgomery: "  << MontgomeryAlgorithm::monExp(a, e, n) << std::endl;
 
-    const std::vector<int> result = CIHSAlgorithm::monExp(a, e, n);
-    std::cout << "Result CIHS: ";
-    BinaryHelper::printVector(result);
+    // const std::vector<int> result = CIHSAlgorithm::monExp(a, e, n);
+    // std::cout << "Result CIHS: ";
+    // BinaryHelper::printVector(result);
 
-    std::cout << std::endl;
-*/
-    //FIPS
+    // std::cout << std::endl;
+
+    // FIPS
     unsigned long long x = 123;
     unsigned long long y = 456;
     unsigned long long m = 1009;

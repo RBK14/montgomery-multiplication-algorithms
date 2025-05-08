@@ -4,12 +4,12 @@ project(montg_mul_algorithms)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(montg_mul_algorithms main.cpp
-        src/algorithms/fips_algorithm.cpp
-        src/algorithms/fips_algorithm.h
         src/algorithms/cihs_algorithm.cpp
         src/algorithms/cihs_algorithm.h
         src/util/binary_helper.cpp
         src/util/binary_helper.h
         src/algorithms/montgomery_algorithm.cpp
         src/algorithms/montgomery_algorithm.h
+        src/util/number_generator.cpp
+        src/util/number_generator.h
 )

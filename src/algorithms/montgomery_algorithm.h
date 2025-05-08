@@ -12,7 +12,7 @@ public:
 
     static std::tuple<int, int, int> prepare(int n);
 
-private:
+// private:
     static int monPro(int a_bar, int b_bar, int n, int n_prime, int r);
 
     // Metoda realizująca rozszerzony algorytm Euklidesa
@@ -24,7 +24,5 @@ private:
     // Metoda wyliczająca odwrotność modularną
     static int modInverse(int a, int n);
 };
-
-
 
 #endif //MONTGOMERY_ALGORITHM_H

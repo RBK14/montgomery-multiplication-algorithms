@@ -52,8 +52,8 @@ std::vector<int> BinaryHelper::toBinaryVector(const int value, const int length)
 }
 
 void BinaryHelper::printVector(std::vector<int> vector) {
-    for (int i = 0; i < vector.size(); i++) {
-        std::cout << vector[i] << " ";
+    for (int i = vector.size() - 1; i >= 0; i--) {
+        std::cout << vector[i];
     }
     std::cout << std::endl;
 }
