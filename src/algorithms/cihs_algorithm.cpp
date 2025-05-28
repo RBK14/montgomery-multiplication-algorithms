@@ -10,15 +10,15 @@
 #include "montgomery_algorithm.h"
 #include "../util/binary_helper.h"
 
-std::vector<int> CIHSAlgorithm::monExp(const int a, const int e, const int n, const int w) {
+std::vector<int> CIHSAlgorithm::monExp(const uint128_t a, const uint128_t e, const uint128_t n, const int w) {
     auto [k, r, n_prime] = MontgomeryAlgorithm::prepare(n);
 
     const int s = k / w;
 
-    const int a_bar_val = (a * r) % n;
+    const uint128_t a_bar_val = (a * r) % n;
     const std::vector<int> a_bar = BinaryHelper::toBinaryVector(a_bar_val, s);
 
-    const int x_bar_val = (1 * r) % n;
+    const uint128_t x_bar_val = (1 * r) % n;
     std::vector<int> x_bar = BinaryHelper::toBinaryVector(x_bar_val, s);
 
     const std::vector<int> n_bin = BinaryHelper::toBinaryVector(n, s);
@@ -40,9 +40,9 @@ std::vector<int> CIHSAlgorithm::monExp(const int a, const int e, const int n, co
     return u;
 }
 
-std::vector<int> CIHSAlgorithm::CIHS(std::vector<int> a, std::vector<int> b, std::vector<int> n, std::vector<int> n_prime, const int s, const int w) {
-    std::vector<int> t(2 * s, 0);
-    std::vector<int> u(2 * s, 0);
+std::vector<int> CIHSAlgorithm::CIHS(const std::vector<int> &a, const std::vector<int> &b, const std::vector<int> &n, const std::vector<int> &n_prime, const int s, const int w) {
+    std::vector<int> t(s + 2, 0);
+    std::vector<int> u(s + 2, 0);
 
     int carry, sum;
 
@@ -64,10 +64,10 @@ std::vector<int> CIHSAlgorithm::CIHS(std::vector<int> a, std::vector<int> b, std
     // Krok 2
     for (int i = 0; i < s; i++) {
         const int m = t[0] * n_prime[0] % (1 << w);
-        std::tie(carry, sum) = BinaryHelper::addc(t[0], m*n[0]);
+        std::tie(carry, sum) = BinaryHelper::addc(t[0], m * n[0]);
 
         for (int j = 1; j < s; j++) {
-            std::tie (carry, sum) = BinaryHelper::addc(t[j], m*n[j], carry);
+            std::tie (carry, sum) = BinaryHelper::addc(t[j], m * n[j], carry);
             t[j - 1] = sum;
         }
 
@@ -92,27 +92,13 @@ std::vector<int> CIHSAlgorithm::CIHS(std::vector<int> a, std::vector<int> b, std
     for (int i = 0; i < s; i++) {
         std::tie(borrow, diff) = BinaryHelper::subc(t[i], n[i], borrow);
         u[i] = diff;
+        std::tie(borrow, diff) = BinaryHelper::subc(t[s], borrow);
+        u[s] = diff;
     }
 
-    if (borrow == 1) {
-        return {t.begin(), t.begin() + s};
+    if (borrow == 0) {
+        return {u.begin(), u.begin() + s};
     }
 
-    return {u.begin(), u.begin() + s};
-
-    // u.assign(t.begin(), t.end());
-
-    // int borrow = 0, diff;
-    // for (int i = 0; i < s; i++) {
-    //     std::tie(borrow, diff) = BinaryHelper::subc(u[i], n[i], borrow);
-    //     t[i] = diff;
-    //     std::tie(borrow, diff) = BinaryHelper::subc(u[s], borrow);
-    //     t[s] = diff;
-    // }
-    //
-    // if (borrow == 0) {
-    //     return {t.begin(), t.begin() + s};
-    // }
-    //
-    // return {u.begin(), u.begin() + s};
+    return {t.begin(), t.begin() + s};
 }

@@ -36,25 +36,46 @@ std::tuple<int, int> BinaryHelper::subc(const int x, const int y, int borrow) {
 std::vector<int> BinaryHelper::propagate(std::vector<int>& bits, int i, int carry) {
     while (carry > 0 && i < bits.size()) {
         // Dodanie przeniesienia i obliczenie nowego
-        std::tie(carry, bits[i]) = BinaryHelper::addc(bits[i], carry);
+        std::tie(carry, bits[i]) = addc(bits[i], carry);
         i++;
     }
 
     return bits;
 }
 
-std::vector<int> BinaryHelper::toBinaryVector(const int value, const int length) {
+std::vector<int> BinaryHelper::toBinaryVector(const uint128_t value, const int length) {
     std::vector<int> bits;
     for (int i = 0; i < length; ++i) {
-        bits.push_back((value >> i) & 1);
+        bits.push_back(static_cast<int>(value >> i) & 1);
     }
     return bits;
 }
 
-void BinaryHelper::printVector(std::vector<int> vector) {
-    for (int i = vector.size() - 1; i >= 0; i--) {
+void BinaryHelper::printVector(const std::vector<int> &vector) {
+    for (size_t i = vector.size() - 1; i > 0; i--) {
         std::cout << vector[i];
     }
     std::cout << std::endl;
+}
+
+bool BinaryHelper::validate(const uint128_t number, const std::vector<int>& binary_vector) {
+    const size_t n = binary_vector.size();
+
+    // Sprawdzenie, czy wszystkie bity po n są 0 (jeśli wektor jest krótszy niż 128 bitów)
+    for (size_t i = n; i < 128; ++i) {
+        if ((number >> i) & 1) {
+            std::cout << "[WARNING] Incorrect result" << std::endl;
+            return false;
+        }
+    }
+
+    for (size_t i = 0; i < n; ++i) {
+        if (const bool bit = (number >> i) & 1; bit != binary_vector[i]) {
+            std::cout << "[WARNING] Incorrect result" << std::endl;
+            return false;
+        }
+    }
+
+    return true;
 }
 

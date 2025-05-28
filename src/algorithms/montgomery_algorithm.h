@@ -6,23 +6,25 @@
 #define MONTGOMERY_ALGORITHM_H
 #include <tuple>
 
+typedef unsigned __int128 uint128_t;
+
 class MontgomeryAlgorithm {
 public:
-    static int monExp(int a, int e, int n);
+    static uint128_t monExp(uint128_t a, uint128_t e, uint128_t n);
 
-    static std::tuple<int, int, int> prepare(int n);
+    static std::tuple<int, uint128_t, uint128_t> prepare(uint128_t n);
 
 // private:
-    static int monPro(int a_bar, int b_bar, int n, int n_prime, int r);
+    static uint128_t monPro(uint128_t a_bar, uint128_t b_bar, uint128_t n, uint128_t n_prime, uint128_t r);
 
     // Metoda realizująca rozszerzony algorytm Euklidesa
-    static int gcdExtended(int a, int b, int &x, int &y);
+    static uint128_t gcdExtended(uint128_t a, uint128_t b, uint128_t &x, uint128_t &y);
 
     // Metoda wyliczająca największy wspólny dzielnik
-    static int findGCD(int a, int b);
+    static uint128_t findGCD(uint128_t a, uint128_t b);
 
     // Metoda wyliczająca odwrotność modularną
-    static int modInverse(int a, int n);
+    static uint128_t modInverse(uint128_t a, uint128_t n);
 };
 
 #endif //MONTGOMERY_ALGORITHM_H

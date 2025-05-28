@@ -3,52 +3,106 @@
 #include <chrono>
 
 #include "src/algorithms/cihs_algorithm.h"
-#include "src/algorithms/fips_algorithm.h"
+
 #include "src/algorithms/montgomery_algorithm.h"
 #include "src/util/binary_helper.h"
+#include "src/util/number_generator.h"
+#include "src/util/result_parser.h"
+
+void runTest();
+
+
+
+void runSimulation(int trails, const std::vector<int>& bits, const std::vector<Algorithm>& algorithms);
 
 int main() {
+    runSimulation(100, {32}, {Algorithm::FIPS, Algorithm::CIHS});
+
     // CIHS
-    // constexpr int a = 7, e = 10, n = 13;
-
-    // std::cout << "Result Montgomery: "  << MontgomeryAlgorithm::monExp(a, e, n) << std::endl;
-
-    // const std::vector<int> result = CIHSAlgorithm::monExp(a, e, n);
+    // constexpr int a = 59, e = 2, n = 127;
+    //
+    // const uint128_t result = MontgomeryAlgorithm::monExp(a, e, n);
+    //
+    // const std::vector<int> result_bin = CIHSAlgorithm::monExp(a, e, n);
     // std::cout << "Result CIHS: ";
-    // BinaryHelper::printVector(result);
-
-    // std::cout << std::endl;
+    // BinaryHelper::printVector(result_bin);
+    //
+    //
+    // BinaryHelper::validate(result, result_bin);
 
     // FIPS
-    unsigned long long x = 123;
-    unsigned long long y = 456;
-    unsigned long long m = 1009;
-
-    // r = 2^64 mod m
-    __uint128_t r128 = (__uint128_t(1) << 64);
-    unsigned long long r = (unsigned long long)(r128 % m);
-
-    unsigned long long m_inv = 1;
-    for (int i = 0; i < 6; ++i)
-        m_inv *= 2 - m * m_inv;
-
-    unsigned long long m_prime = -m_inv;
-
-    unsigned long long x_mont = ((__uint128_t)x * r) % m;
-    unsigned long long y_mont = ((__uint128_t)y * r) % m;
-
-    auto start = std::chrono::high_resolution_clock::now();
-
-    unsigned long long result_mont = montgomery_multiply_fips(x_mont, y_mont, m, m_prime, r);
-    unsigned long long result = montgomery_multiply_fips(result_mont, 1, m, m_prime, r);
-
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double, std::micro> elapsed = end - start;
-
-    std::cout << "Poprawny wynik: " << (x * y) % m << std::endl;
-
-    std::cout << "Wynik mnożenia Montgomery (FIPS): " << result << std::endl;
-    std::cout << "Czas wykonania: " << elapsed.count() / 1000 << " ms" << std::endl;
+    // unsigned long long x = 123;
+    // unsigned long long y = 456;
+    // unsigned long long m = 1009;
+    //
+    // // r = 2^64 mod m
+    // __uint128_t r128 = (__uint128_t(1) << 64);
+    // unsigned long long r = (unsigned long long)(r128 % m);
+    //
+    // unsigned long long m_inv = 1;
+    // for (int i = 0; i < 6; ++i)
+    //     m_inv *= 2 - m * m_inv;
+    //
+    // unsigned long long m_prime = -m_inv;
+    //
+    // unsigned long long x_mont = ((__uint128_t)x * r) % m;
+    // unsigned long long y_mont = ((__uint128_t)y * r) % m;
+    //
+    // auto start = std::chrono::high_resolution_clock::now();
+    //
+    // unsigned long long result_mont = montgomery_multiply_fips(x_mont, y_mont, m, m_prime, r);
+    // unsigned long long result = montgomery_multiply_fips(result_mont, 1, m, m_prime, r);
+    //
+    // auto end = std::chrono::high_resolution_clock::now();
+    // std::chrono::duration<double, std::micro> elapsed = end - start;
+    //
+    // std::cout << "Poprawny wynik: " << (x * y) % m << std::endl;
+    //
+    // std::cout << "Wynik mnożenia Montgomery (FIPS): " << result << std::endl;
+    // std::cout << "Czas wykonania: " << elapsed.count() / 1000 << " ms" << std::endl;
 
     return 0;
 }
+
+void runSimulation(const int trails, const std::vector<int>& bits, const std::vector<Algorithm>& algorithms) {
+    ResultParser parser;
+
+    for (const auto& bit_num : bits) {
+        for (int i = 0; i < trails; i++) {
+
+            const uint128_t a = NumberGenerator::generate(bit_num);
+            constexpr int e = 2;
+            const uint128_t n = NumberGenerator::generate(bit_num, true);
+
+            const uint128_t result = MontgomeryAlgorithm::monExp(a, e, n);
+
+            for (const auto& algorithm : algorithms) {
+
+                std::vector<int> result_bin;
+                std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
+
+                if (algorithm == Algorithm::FIPS) {
+                    start = std::chrono::high_resolution_clock::now();
+                    // result_bin = FIPSAlgorithm::monExp(a, e, n);
+                    end = std::chrono::high_resolution_clock::now();
+                } else if (algorithm == Algorithm::CIHS) {
+                    start = std::chrono::system_clock::now();
+                    result_bin = CIHSAlgorithm::monExp(a, e, n);
+                    end = std::chrono::high_resolution_clock::now();
+                }
+
+                // BinaryHelper::validate(result, result_bin);
+
+                const std::chrono::duration<double, std::milli> duration = end - start;
+                parser.addScore(duration.count(), algorithm);
+            }
+            std::cout << "Bits: " << bit_num << "; " << i + 1 << "/" << trails << std::endl;
+        }
+
+        parser.calculateAverageScores(bit_num);
+    }
+
+    parser.saveScores("results.txt");
+}
+
+

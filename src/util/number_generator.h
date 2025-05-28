@@ -10,7 +10,7 @@ typedef unsigned __int128 uint128_t;
 
 class NumberGenerator {
 public:
-    static uint128_t generate(int bits);
+    static uint128_t generate(int bits, bool odd = false);
 
     static std::string numberToString(uint128_t number);
 };

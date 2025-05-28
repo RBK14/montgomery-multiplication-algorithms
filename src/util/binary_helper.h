@@ -8,6 +8,8 @@
 #include <tuple>
 #include <vector>
 
+typedef unsigned __int128 uint128_t;
+
 class BinaryHelper {
 public:
     // Metoda dodawania z uwzględnieniem przeniesienia
@@ -19,9 +21,11 @@ public:
     // Metoda propagowania przeniesienia
     static std::vector<int> propagate(std::vector<int>& bits, int i, int carry);
 
-    static std::vector<int> toBinaryVector(int value, int length);
+    static std::vector<int> toBinaryVector(uint128_t value, int length);
 
-    static void printVector(std::vector<int> vector);
+    static void printVector(const std::vector<int> &vector);
+
+    static bool validate(uint128_t number, const std::vector<int>& binary_vector);
 
 };
 

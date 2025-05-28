@@ -7,10 +7,8 @@
 #include <stdexcept>
 #include <random>
 
-typedef unsigned __int128 uint128_t;
-
-uint128_t NumberGenerator::generate(int bits) {
-    if (bits <= 0 || bits > 128) {
+uint128_t NumberGenerator::generate(const int bits, const bool odd) {
+    if (bits <= 0 || bits >= 128) {
         throw std::invalid_argument("Bits must be in range 1-128");
     }
 
@@ -21,6 +19,10 @@ uint128_t NumberGenerator::generate(int bits) {
     uint128_t result = 0;
     for (int i = 0; i < bits; ++i) {
         result = (result << 1) | distrib(gen);
+    }
+
+    if (odd) {
+        result |= 1;
     }
 
     return result;
