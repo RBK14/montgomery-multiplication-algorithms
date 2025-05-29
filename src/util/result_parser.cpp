@@ -10,7 +10,7 @@
 
 void ResultParser::addScore(const double score, const Algorithm algorithm) {
     if (algorithm == Algorithm::FIPS) fipsScores.push_back(score);
-    if (algorithm == Algorithm::CIHS) cihsScores.push_back(score);
+    if (algorithm == Algorithm::SOS) sosScores.push_back(score);
 }
 
 void ResultParser::saveScores(const std::string& filename) const {
@@ -20,12 +20,12 @@ void ResultParser::saveScores(const std::string& filename) const {
         return;
     }
 
-    file << "n;fips;cihs\n";
+    file << "n;fips;sos\n";
 
     for (const auto& [size, scores] : averageScores) {
         file << size << ";"
              << scores.at(Algorithm::FIPS) << ";"
-             << scores.at(Algorithm::CIHS) << ";\n";
+             << scores.at(Algorithm::SOS) << ";\n";
     }
 
     file.close();
@@ -37,7 +37,7 @@ void ResultParser::calculateAverageScores(const int bits) {
     std::map <Algorithm, double> scores;
 
     scores[Algorithm::FIPS] = calculateAverageScore(fipsScores);
-    scores[Algorithm::CIHS] = calculateAverageScore(cihsScores);
+    scores[Algorithm::SOS] = calculateAverageScore(sosScores);
 
 
     averageScores.insert({bits, scores});

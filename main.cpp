@@ -2,12 +2,13 @@
 #include <iostream>
 #include <chrono>
 
-#include "src/algorithms/cihs_algorithm.h"
-
 #include "src/algorithms/montgomery_algorithm.h"
+#include "src/algorithms/sos_algorithm.h"
 #include "src/util/binary_helper.h"
 #include "src/util/number_generator.h"
 #include "src/util/result_parser.h"
+
+typedef unsigned __int128 uint128_t;
 
 void runTest();
 
@@ -16,15 +17,16 @@ void runTest();
 void runSimulation(int trails, const std::vector<int>& bits, const std::vector<Algorithm>& algorithms);
 
 int main() {
-    runSimulation(100, {32}, {Algorithm::FIPS, Algorithm::CIHS});
+    runSimulation(1000, {32}, {Algorithm::FIPS, Algorithm::SOS});
 
-    // CIHS
-    // constexpr int a = 59, e = 2, n = 127;
+    // SOS
+    // constexpr uint128_t a = 7, e = 10, n = 13;
     //
     // const uint128_t result = MontgomeryAlgorithm::monExp(a, e, n);
+    // std::cout << "Result Montgomery: " << NumberGenerator::numberToString(result) << std::endl;
     //
-    // const std::vector<int> result_bin = CIHSAlgorithm::monExp(a, e, n);
-    // std::cout << "Result CIHS: ";
+    // const std::vector<int> result_bin = SOSAlgorithm::monExp(a, e, n);
+    // std::cout << "Result SOS: ";
     // BinaryHelper::printVector(result_bin);
     //
     //
@@ -85,9 +87,9 @@ void runSimulation(const int trails, const std::vector<int>& bits, const std::ve
                     start = std::chrono::high_resolution_clock::now();
                     // result_bin = FIPSAlgorithm::monExp(a, e, n);
                     end = std::chrono::high_resolution_clock::now();
-                } else if (algorithm == Algorithm::CIHS) {
+                } else if (algorithm == Algorithm::SOS) {
                     start = std::chrono::system_clock::now();
-                    result_bin = CIHSAlgorithm::monExp(a, e, n);
+                    result_bin = SOSAlgorithm::monExp(a, e, n);
                     end = std::chrono::high_resolution_clock::now();
                 }
 

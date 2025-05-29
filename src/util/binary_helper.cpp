@@ -52,7 +52,7 @@ std::vector<int> BinaryHelper::toBinaryVector(const uint128_t value, const int l
 }
 
 void BinaryHelper::printVector(const std::vector<int> &vector) {
-    for (size_t i = vector.size() - 1; i > 0; i--) {
+    for (int i = static_cast<int>(vector.size()) - 1; i >= 0; i--) {
         std::cout << vector[i];
     }
     std::cout << std::endl;

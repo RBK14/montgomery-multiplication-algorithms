@@ -4,6 +4,7 @@
 
 #include "number_generator.h"
 
+#include <iostream>
 #include <stdexcept>
 #include <random>
 
@@ -19,6 +20,7 @@ uint128_t NumberGenerator::generate(const int bits, const bool odd) {
     uint128_t result = 0;
     for (int i = 0; i < bits; ++i) {
         result = (result << 1) | distrib(gen);
+
     }
 
     if (odd) {

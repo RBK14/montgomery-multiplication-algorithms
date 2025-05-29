@@ -11,12 +11,12 @@
 
 enum class Algorithm {
     FIPS,
-    CIHS
+    SOS
 };
 
 class ResultParser {
     std::vector<double> fipsScores;
-    std::vector<double> cihsScores;
+    std::vector<double> sosScores;
     std::map<int, std::map<Algorithm, double>> averageScores;
 
 public:

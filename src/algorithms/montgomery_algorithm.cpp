@@ -29,6 +29,7 @@ uint128_t MontgomeryAlgorithm::monExp(const uint128_t a, const uint128_t e, cons
     return monPro(x_bar, 1, n, n_prime, r);
 }
 
+// TODO: SPRAWDZIĆ GDZIE TU SIE WYPIERDALA
 std::tuple<int, uint128_t, uint128_t> MontgomeryAlgorithm::prepare(const uint128_t n) {
     // Obliczenie k: liczby bitów w n
     int k = 0;
