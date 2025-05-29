@@ -17,20 +17,18 @@ void runTest();
 void runSimulation(int trails, const std::vector<int>& bits, const std::vector<Algorithm>& algorithms);
 
 int main() {
-    runSimulation(1000, {32}, {Algorithm::FIPS, Algorithm::SOS});
+    // runSimulation(1, {2, 4, 8, 16, 32, 64, 128}, {Algorithm::SOS});
 
     // SOS
-    // constexpr uint128_t a = 7, e = 10, n = 13;
-    //
-    // const uint128_t result = MontgomeryAlgorithm::monExp(a, e, n);
-    // std::cout << "Result Montgomery: " << NumberGenerator::numberToString(result) << std::endl;
-    //
-    // const std::vector<int> result_bin = SOSAlgorithm::monExp(a, e, n);
-    // std::cout << "Result SOS: ";
-    // BinaryHelper::printVector(result_bin);
-    //
-    //
-    // BinaryHelper::validate(result, result_bin);
+    constexpr uint128_t a = 2, e = 2, n = 11;
+
+    const uint128_t result = MontgomeryAlgorithm::monExp(a, e, n);
+    std::cout << "Result Montgomery: " << NumberGenerator::numberToString(result) << std::endl;
+
+    const std::vector<int> result_bin = SOSAlgorithm::monExp(a, e, n);
+    std::cout << "Result SOS: ";
+    BinaryHelper::printVector(result_bin);
+
 
     // FIPS
     // unsigned long long x = 123;
@@ -72,15 +70,12 @@ void runSimulation(const int trails, const std::vector<int>& bits, const std::ve
     for (const auto& bit_num : bits) {
         for (int i = 0; i < trails; i++) {
 
-            const uint128_t a = NumberGenerator::generate(bit_num);
-            constexpr int e = 2;
             const uint128_t n = NumberGenerator::generate(bit_num, true);
+            const uint128_t a = NumberGenerator::generate(bit_num, false, n);
+            constexpr int e = 2;
 
-            const uint128_t result = MontgomeryAlgorithm::monExp(a, e, n);
-
+            std::vector<int> result_bin;
             for (const auto& algorithm : algorithms) {
-
-                std::vector<int> result_bin;
                 std::chrono::time_point<std::chrono::high_resolution_clock> start, end;
 
                 if (algorithm == Algorithm::FIPS) {
@@ -92,8 +87,6 @@ void runSimulation(const int trails, const std::vector<int>& bits, const std::ve
                     result_bin = SOSAlgorithm::monExp(a, e, n);
                     end = std::chrono::high_resolution_clock::now();
                 }
-
-                // BinaryHelper::validate(result, result_bin);
 
                 const std::chrono::duration<double, std::milli> duration = end - start;
                 parser.addScore(duration.count(), algorithm);
