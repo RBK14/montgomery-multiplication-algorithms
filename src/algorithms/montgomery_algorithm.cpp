@@ -4,6 +4,9 @@
 
 #include "montgomery_algorithm.h"
 
+#include <chrono>
+#include <iostream>
+#include <numeric>
 #include <stdexcept>
 
 uint128_t MontgomeryAlgorithm::monExp(const uint128_t a, const uint128_t e, const uint128_t n) {
@@ -29,7 +32,7 @@ uint128_t MontgomeryAlgorithm::monExp(const uint128_t a, const uint128_t e, cons
     return monPro(x_bar, 1, n, n_prime, r);
 }
 
-// TODO: SPRAWDZIĆ GDZIE TU SIE WYPIERDALA
+
 std::tuple<int, uint128_t, uint128_t> MontgomeryAlgorithm::prepare(const uint128_t n) {
     // Obliczenie k: liczby bitów w n
     int k = 0;
@@ -49,8 +52,6 @@ std::tuple<int, uint128_t, uint128_t> MontgomeryAlgorithm::prepare(const uint128
     } catch (const std::exception &e) {
         throw std::runtime_error(std::string("Exception: ") + e.what());
     }
-
-
 
     // Obliczanie n_prime ze wzoru: r * r^(-1) - n * n' = 1
     uint128_t n_prime = (r * r_inv - 1) / n;
@@ -87,24 +88,13 @@ uint128_t MontgomeryAlgorithm::gcdExtended(const uint128_t a, const uint128_t b,
     return gcd;
 }
 
-uint128_t MontgomeryAlgorithm::findGCD(const uint128_t a, const uint128_t b) {
+uint128_t MontgomeryAlgorithm::modInverse(const uint128_t r, const uint128_t n) {
     uint128_t x = 1, y = 1;
+    const uint128_t gcd = gcdExtended(r, n, x, y);
 
-    return gcdExtended(a, b, x, y);
-}
-
-uint128_t MontgomeryAlgorithm::modInverse(const uint128_t a, const uint128_t n) {
-    if (const uint128_t gcd = findGCD(a, n); gcd > 1) {
-        // Odwrotność modularna nie istnieje
+    if (gcd != 1) {
         throw std::invalid_argument("Modular inverse does not exist");
     }
 
-    for (int x = 1; x < n; x++) {
-        if (((a % n) * (x % n)) % n == 1) {
-            return x;
-        }
-    }
-
-    // Błąd przy wyliczaniu odwrotności
-    return -1;
+    return (x % n + n) % n;
 }
