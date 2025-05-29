@@ -4,13 +4,14 @@
 
 #ifndef NUMBER_GENERATOR_H
 #define NUMBER_GENERATOR_H
+#include <optional>
 #include <string>
 
 typedef unsigned __int128 uint128_t;
 
 class NumberGenerator {
 public:
-    static uint128_t generate(int bits, bool odd = false);
+    static uint128_t generate(int bits, bool force_odd, const std::optional<uint128_t> &maxValue = std::nullopt);
 
     static std::string numberToString(uint128_t number);
 };
