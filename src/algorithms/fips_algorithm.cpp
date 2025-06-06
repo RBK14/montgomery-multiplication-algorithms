@@ -1,17 +1,80 @@
 #include "fips_algorithm.h"
+#include "montgomery_algorithm.h"
+#include "../util/binary_helper.h"
 
-unsigned long long montgomery_multiply_fips(unsigned long long x, unsigned long long y, unsigned long long m, unsigned long long m_prime, unsigned long long /* r */) {
-    __uint128_t t = 0;
+namespace FIPSAlgorithm {
 
-    for (int i = 0; i < 64; ++i) {
-        unsigned long long xi = (x >> i) & 1;
-        __uint128_t tmp = t + (__uint128_t)(xi) * y;
-        unsigned long long u = ((unsigned long long)tmp * m_prime) & 1;
-        t = (tmp + (__uint128_t)u * m) >> 1;
+std::vector<int> montgomery_multiply_fips(const std::vector<int> &x, const std::vector<int> &y,
+                                           const std::vector<int> &m, const std::vector<int> &m_prime,
+                                           int s, int w) {
+    std::vector<int> t(2 * s + 1, 0);
+    std::vector<int> u(2 * s + 1, 0);
+    int carry, sum;
+
+    for (int i = 0; i < s; ++i) {
+        carry = 0;
+        for (int j = 0; j < s; ++j) {
+            std::tie(carry, sum) = BinaryHelper::addc(t[i + j], x[j] * y[i], carry);
+            t[i + j] = sum;
+        }
+        t[i + s] = carry;
+
+        carry = 0;
+        int m_factor = (t[i] * m_prime[0]) % (1 << w);
+        for (int j = 0; j < s; ++j) {
+            std::tie(carry, sum) = BinaryHelper::addc(t[i + j], m_factor * m[j], carry);
+            t[i + j] = sum;
+        }
+
+        t = BinaryHelper::propagate(t, i + s, carry);
     }
 
-    if (t >= m)
-        t -= m;
+    for (int j = 0; j < s + 1; j++) {
+        u[j] = t[j + s];
+    }
 
-    return (unsigned long long)t;
+    int borrow = 0, diff;
+    for (int i = 0; i < s; i++) {
+        std::tie(borrow, diff) = BinaryHelper::subc(u[i], m[i], borrow);
+        t[i] = diff;
+        std::tie(borrow, diff) = BinaryHelper::subc(u[s], borrow);
+        t[s] = diff;
+    }
+
+    if (borrow == 0) {
+        return {t.begin(), t.begin() + s};
+    }
+
+    return {u.begin(), u.begin() + s};
 }
+
+
+std::vector<int> monExp(const int128_t a, const int128_t e, const int128_t n, const int w) {
+    auto [k, r, n_prime] = MontgomeryAlgorithm::prepare(n);
+    const int s = k / w;
+
+    const int128_t a_bar_val = (a * r) % n;
+    const std::vector<int> a_bar = BinaryHelper::toBinaryVector(a_bar_val, s);
+
+    const int128_t x_bar_val = (1 * r) % n;
+    std::vector<int> x_bar = BinaryHelper::toBinaryVector(x_bar_val, s);
+
+    const std::vector<int> n_bin = BinaryHelper::toBinaryVector(n, s);
+    const std::vector<int> n_prime_bin = BinaryHelper::toBinaryVector(n_prime, s);
+
+    for (int i = k - 1; i >= 0; i--) {
+        x_bar = montgomery_multiply_fips(x_bar, x_bar, n_bin, n_prime_bin, s, w);
+
+        if ((e >> i) & 1) {
+            x_bar = montgomery_multiply_fips(x_bar, a_bar, n_bin, n_prime_bin, s, w);
+        }
+    }
+
+    std::vector<int> one_bin(s, 0);
+    one_bin[0] = 1;
+
+    std::vector<int> u = montgomery_multiply_fips(x_bar, one_bin, n_bin, n_prime_bin, s, w);
+    return u;
+}
+
+} // namespace FIPSAlgorithm
