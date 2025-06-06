@@ -20,7 +20,7 @@ int main() {
     // runSimulation(1, {2, 4, 8, 16, 32, 64, 128}, {Algorithm::SOS});
 
     // SOS
-    constexpr int128_t a = 9, e = 30, n = 15;
+    constexpr int128_t a = 9, e = 145, n = 31;
 
     const int128_t result = MontgomeryAlgorithm::monExp(a, e, n);
     std::cout << "Result Montgomery: " << NumberGenerator::numberToString(result) << std::endl;

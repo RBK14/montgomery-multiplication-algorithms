@@ -4,45 +4,54 @@
 
 namespace FIPSAlgorithm {
 
-std::vector<int> montgomery_multiply_fips(const std::vector<int> &x, const std::vector<int> &y,
-                                           const std::vector<int> &m, const std::vector<int> &m_prime,
+std::vector<int> montgomery_multiply_fips(const std::vector<int> &a, const std::vector<int> &b,
+                                           const std::vector<int> &n, const std::vector<int> &n_prime,
                                            int s, int w) {
-    std::vector<int> t(2 * s + 1, 0);
-    std::vector<int> u(2 * s + 1, 0);
-    int carry, sum;
+    const int W = 1 << w;
+    std::vector<int> t(2 * s + 2, 0);
+    std::vector<int> u(s + 1, 0);
 
     for (int i = 0; i < s; ++i) {
-        carry = 0;
+        int carry = 0, sum = 0;
+
         for (int j = 0; j < s; ++j) {
-            std::tie(carry, sum) = BinaryHelper::addc(t[i + j], x[j] * y[i], carry);
+            std::tie(carry, sum) = BinaryHelper::addc(t[i + j], a[j] * b[i], carry);
             t[i + j] = sum;
         }
         t[i + s] = carry;
 
+        int m_i = (t[i] * n_prime[0]) % W;
+
         carry = 0;
-        int m_factor = (t[i] * m_prime[0]) % (1 << w);
         for (int j = 0; j < s; ++j) {
-            std::tie(carry, sum) = BinaryHelper::addc(t[i + j], m_factor * m[j], carry);
+            std::tie(carry, sum) = BinaryHelper::addc(t[i + j], m_i * n[j], carry);
             t[i + j] = sum;
         }
-
-        t = BinaryHelper::propagate(t, i + s, carry);
+        t[i + s] += carry;
     }
 
-    for (int j = 0; j < s + 1; j++) {
+    for (int j = 0; j < s + 1; ++j) {
         u[j] = t[j + s];
     }
 
-    int borrow = 0, diff;
-    for (int i = 0; i < s; i++) {
-        std::tie(borrow, diff) = BinaryHelper::subc(u[i], m[i], borrow);
-        t[i] = diff;
-        std::tie(borrow, diff) = BinaryHelper::subc(u[s], borrow);
-        t[s] = diff;
+    bool needsReduction = false;
+    for (int i = s - 1; i >= 0; --i) {
+        if (u[i] > n[i]) {
+            needsReduction = true;
+            break;
+        } else if (u[i] < n[i]) {
+            break;
+        }
     }
 
-    if (borrow == 0) {
-        return {t.begin(), t.begin() + s};
+    if (needsReduction) {
+        std::vector<int> result(s);
+        int borrow = 0, diff;
+        for (int i = 0; i < s; ++i) {
+            std::tie(borrow, diff) = BinaryHelper::subc(u[i], n[i], borrow);
+            result[i] = diff;
+        }
+        return result;
     }
 
     return {u.begin(), u.begin() + s};
