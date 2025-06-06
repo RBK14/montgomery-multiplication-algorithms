@@ -7,13 +7,13 @@
 #include <optional>
 #include <string>
 
-typedef unsigned __int128 uint128_t;
+typedef __int128 int128_t;
 
 class NumberGenerator {
 public:
-    static uint128_t generate(int bits, bool force_odd, const std::optional<uint128_t> &maxValue = std::nullopt);
+    static int128_t generate(int bits, bool force_odd, const std::optional<int128_t> &maxValue = std::nullopt);
 
-    static std::string numberToString(uint128_t number);
+    static std::string numberToString(int128_t number);
 };
 
 

@@ -4,17 +4,19 @@
 
 #include "sos_algorithm.h"
 
+#include <iostream>
+
 #include "montgomery_algorithm.h"
 #include "../util/binary_helper.h"
 
-std::vector<int> SOSAlgorithm::monExp(const uint128_t a, const uint128_t e, const uint128_t n, const int w) {
+std::vector<int> SOSAlgorithm::monExp(const int128_t a, const int128_t e, const int128_t n, const int w) {
     auto [k, r, n_prime] = MontgomeryAlgorithm::prepare(n);
     const int s = k / w;
 
-    const uint128_t a_bar_val = (a * r) % n;
+    const int128_t a_bar_val = (a * r) % n;
     const std::vector<int> a_bar = BinaryHelper::toBinaryVector(a_bar_val, s);
 
-    const uint128_t x_bar_val = (1 * r) % n;
+    const int128_t x_bar_val = (1 * r) % n;
     std::vector<int> x_bar = BinaryHelper::toBinaryVector(x_bar_val, s);
 
     const std::vector<int> n_bin = BinaryHelper::toBinaryVector(n, s);
@@ -69,13 +71,13 @@ std::vector<int> SOSAlgorithm::SOS(const std::vector<int> &a, const std::vector<
     for (int i = 0; i < s; i++) {
         std::tie(borrow, diff) = BinaryHelper::subc(u[i], n[i], borrow);
         t[i] = diff;
-        std::tie(borrow, diff) = BinaryHelper::subc(u[s], borrow);
-        t[s] = diff;
     }
+    std::tie(borrow, diff) = BinaryHelper::subc(u[s], borrow);
+    t[s] = diff;
 
     if (borrow == 0) {
         return {t.begin(), t.begin() + s};
     }
 
-    return {u.begin(), u.begin() + s};
+    return  {u.begin(), u.begin() + s};
 }

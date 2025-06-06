@@ -43,7 +43,7 @@ std::vector<int> BinaryHelper::propagate(std::vector<int>& bits, int i, int carr
     return bits;
 }
 
-std::vector<int> BinaryHelper::toBinaryVector(const uint128_t value, const int length) {
+std::vector<int> BinaryHelper::toBinaryVector(const int128_t value, const int length) {
     std::vector<int> bits;
     for (int i = 0; i < length; ++i) {
         bits.push_back(static_cast<int>(value >> i) & 1);
@@ -58,7 +58,7 @@ void BinaryHelper::printVector(const std::vector<int> &vector) {
     std::cout << std::endl;
 }
 
-bool BinaryHelper::validate(const uint128_t number, const std::vector<int>& binary_vector) {
+bool BinaryHelper::validate(const int128_t number, const std::vector<int>& binary_vector) {
     const size_t n = binary_vector.size();
 
     // Sprawdzenie, czy wszystkie bity po n są 0 (jeśli wektor jest krótszy niż 128 bitów)

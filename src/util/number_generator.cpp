@@ -8,17 +8,17 @@
 #include <stdexcept>
 #include <random>
 
-uint128_t NumberGenerator::generate(const int bits, const bool force_odd, const std::optional<uint128_t> &maxValue) {
+int128_t NumberGenerator::generate(const int bits, const bool force_odd, const std::optional<int128_t> &maxValue) {
     if (bits <= 0 || bits > 128) {
         throw std::invalid_argument("Bits must be in range 1-128");
     }
 
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::uniform_int_distribution<uint128_t> distrib(0, 1);
+    std::uniform_int_distribution<int128_t> distrib(0, 1);
 
     // Generowanie liczby
-    uint128_t result = 0;
+    int128_t result = 0;
     for (int i = 0; i < bits; ++i) {
         result = (result << 1) | distrib(gen);
 
@@ -37,7 +37,7 @@ uint128_t NumberGenerator::generate(const int bits, const bool force_odd, const 
     return result;
 }
 
-std::string NumberGenerator::numberToString(uint128_t number) {
+std::string NumberGenerator::numberToString(int128_t number) {
     if (number == 0) {
         return "0";
     }

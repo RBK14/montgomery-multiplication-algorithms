@@ -6,11 +6,11 @@
 #define SOS_ALGORITHM_H
 #include <vector>
 
-typedef unsigned __int128 uint128_t;
+typedef __int128 int128_t;
 
 class SOSAlgorithm {
 public:
-    static std::vector<int> monExp(uint128_t a, uint128_t e, uint128_t n, int w = 1);
+    static std::vector<int> monExp(int128_t a, int128_t e, int128_t n, int w = 1);
 
 private:
     // Metoda realizująca algorytm SOS

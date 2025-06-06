@@ -8,7 +8,7 @@
 #include "src/util/number_generator.h"
 #include "src/util/result_parser.h"
 
-typedef unsigned __int128 uint128_t;
+typedef __int128 int128_t;
 
 void runTest();
 
@@ -20,9 +20,9 @@ int main() {
     // runSimulation(1, {2, 4, 8, 16, 32, 64, 128}, {Algorithm::SOS});
 
     // SOS
-    constexpr uint128_t a = 2, e = 2, n = 11;
+    constexpr int128_t a = 7, e = 10, n = 13;
 
-    const uint128_t result = MontgomeryAlgorithm::monExp(a, e, n);
+    const int128_t result = MontgomeryAlgorithm::monExp(a, e, n);
     std::cout << "Result Montgomery: " << NumberGenerator::numberToString(result) << std::endl;
 
     const std::vector<int> result_bin = SOSAlgorithm::monExp(a, e, n);
@@ -70,8 +70,8 @@ void runSimulation(const int trails, const std::vector<int>& bits, const std::ve
     for (const auto& bit_num : bits) {
         for (int i = 0; i < trails; i++) {
 
-            const uint128_t n = NumberGenerator::generate(bit_num, true);
-            const uint128_t a = NumberGenerator::generate(bit_num, false, n);
+            const int128_t n = NumberGenerator::generate(bit_num, true);
+            const int128_t a = NumberGenerator::generate(bit_num, false, n);
             constexpr int e = 2;
 
             std::vector<int> result_bin;
