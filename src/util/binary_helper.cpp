@@ -71,7 +71,7 @@ bool BinaryHelper::validate(const int128_t number, const std::vector<int>& binar
 
     for (size_t i = 0; i < n; ++i) {
         if (const bool bit = (number >> i) & 1; bit != binary_vector[i]) {
-            std::cout << "[WARNING] Incorrect result" << std::endl;
+            std::cerr << "[ERROR] Incorrect result" << std::endl;
             return false;
         }
     }

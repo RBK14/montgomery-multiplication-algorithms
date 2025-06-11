@@ -50,7 +50,8 @@ std::tuple<int, int128_t, int128_t> MontgomeryAlgorithm::prepare(const int128_t 
     try {
          r_inv = modInverse(r, n);
     } catch (const std::exception &e) {
-        throw std::runtime_error(std::string("Exception: ") + e.what());
+        throw std::runtime_error(e.what());
+        r_inv = 0;
     }
 
     // Obliczanie n_prime ze wzoru: r * r^(-1) - n * n' = 1
@@ -71,7 +72,7 @@ int128_t MontgomeryAlgorithm::monPro(const int128_t a_bar, const int128_t b_bar,
     return (u >= n) ? (u - n) : u;
 }
 
-int128_t MontgomeryAlgorithm::gcdExtended(const int128_t a, const int b, int128_t& x, int128_t& y) {
+int128_t MontgomeryAlgorithm::gcdExtended(const int128_t a, const int128_t b, int128_t& x, int128_t& y) {
     if (a == 0) {
         x = 0;
         y = 1;
@@ -82,7 +83,7 @@ int128_t MontgomeryAlgorithm::gcdExtended(const int128_t a, const int b, int128_
     int128_t x1, y1;
     const int128_t gcd = gcdExtended(b % a, a, x1, y1);
 
-    x = y1 - (b / a) * x1;
+    x = y1 - static_cast<int128_t>(b / a) * x1;
     y = x1;
 
     return gcd;

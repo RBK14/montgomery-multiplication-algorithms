@@ -24,21 +24,23 @@ std::vector<int> SOSAlgorithm::monExp(const int128_t a, const int128_t e, const 
     const std::vector<int> n_prime_bin= BinaryHelper::toBinaryVector(n_prime, s);
 
     for (int i = k - 1; i >= 0; i--) {
-        x_bar = SOS(x_bar, x_bar, n_bin, n_prime_bin, s, w);
+        x_bar = multiplySOS(x_bar, x_bar, n_bin, n_prime_bin, s, w);
 
         if ((e >> i) & 1) {
-            x_bar = SOS(x_bar, a_bar, n_bin, n_prime_bin, s, w);
+            x_bar = multiplySOS(x_bar, a_bar, n_bin, n_prime_bin, s, w);
         }
     }
 
     std::vector<int> one_bin(s, 0);
     one_bin[0] = 1;
 
-    std::vector<int> u = SOS(x_bar, one_bin, n_bin, n_prime_bin, s, w);
+    std::vector<int> u = multiplySOS(x_bar, one_bin, n_bin, n_prime_bin, s, w);
     return u;
 }
 
-std::vector<int> SOSAlgorithm::SOS(const std::vector<int> &a, const std::vector<int> &b, const std::vector<int> &n, const std::vector<int> &n_prime, int s, int w) {
+std::vector<int> SOSAlgorithm::multiplySOS(const std::vector<int> &a, const std::vector<int> &b,
+                                           const std::vector<int> &n, const std::vector<int> &n_prime,
+                                           const int s, const int w) {
     std::vector<int> t(2 * s + 1, 0);
     std::vector<int> u(2 * s + 1, 0);
 
@@ -63,8 +65,8 @@ std::vector<int> SOSAlgorithm::SOS(const std::vector<int> &a, const std::vector<
         t = BinaryHelper::propagate(t, i + s, carry);
     }
 
-    for (int j = 0; j < s + 1; j++) {
-        u[j] = t[j + s];
+    for (int i = 0; i < s + 1; i++) {
+        u[i] = t[i + s];
     }
 
     int borrow = 0, diff;
@@ -78,6 +80,5 @@ std::vector<int> SOSAlgorithm::SOS(const std::vector<int> &a, const std::vector<
     if (borrow == 0) {
         return {t.begin(), t.begin() + s};
     }
-
     return  {u.begin(), u.begin() + s};
 }

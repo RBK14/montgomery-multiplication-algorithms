@@ -12,9 +12,9 @@ class SOSAlgorithm {
 public:
     static std::vector<int> monExp(int128_t a, int128_t e, int128_t n, int w = 1);
 
-private:
+// private:
     // Metoda realizująca algorytm SOS
-    static std::vector<int> SOS(const std::vector<int> &a, const std::vector<int> &b, const std::vector<int> &n, const std::vector<int> &n_prime, int s, int w);
+    static std::vector<int> multiplySOS(const std::vector<int> &a, const std::vector<int> &b, const std::vector<int> &n, const std::vector<int> &n_prime, int s, int w);
 };
 
 #endif //SOS_ALGORITHM_H

@@ -3,6 +3,7 @@ project(montg_mul_algorithms)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_EXE_LINKER_FLAGS "")
+set(CMAKE_EXE_LINKER_FLAGS "-static")
 
 add_executable(montg_mul_algorithms main.cpp
         src/util/binary_helper.cpp
