@@ -27,11 +27,28 @@ int main() {
 
     int mode_choice;
     std::cin >> mode_choice;
+    std::cin.ignore();
 
     if (mode_choice == 1) {
-        // Tryb symulacji
-        launchSimulation(500, {2, 4, 8, 16, 24, 32, 40, 48, 56, 63}, {Algorithm::FIPS, Algorithm::SOS});
-    } else if (mode_choice == 2) {
+        std::string bit_sizes_line;
+        std::cout << "Enter bit sizes (space-separated): ";
+        std::getline(std::cin, bit_sizes_line);
+
+        std::stringstream ss(bit_sizes_line);
+        std::vector<int> bit_sizes;
+        int bit_size;
+        while (ss >> bit_size) {
+            bit_sizes.push_back(bit_size);
+        }
+
+        int trials;
+        std::cout << "Enter number of trials: ";
+        std::cin >> trials;
+
+        // uruchamiamy symulację z podanymi parametrami
+        launchSimulation(trials, bit_sizes, {Algorithm::FIPS, Algorithm::SOS});
+    }
+    else if (mode_choice == 2) {
         std::cout << "Select algorithm:\n";
         std::cout << "1. FIPS\n";
         std::cout << "2. SOS\n";
@@ -49,14 +66,15 @@ int main() {
         } else if (alg_choice == 3) {
             selectedAlgorithm = Algorithm::MONPRO;
         } else {
-            std::cerr << "Invalid algorithm choice.\n";
+            std::cerr << "[ERROR] Invalid algorithm choice.\n";
             return 1;
         }
 
         const auto [a, e, n] = readInputData();
         launchTest(a, e, n, selectedAlgorithm);
-    } else {
-        std::cerr << "Invalid mode choice.\n";
+    }
+    else {
+        std::cerr << "[ERROR] Invalid mode choice.\n";
         return 1;
     }
 
@@ -137,11 +155,11 @@ void launchSimulation(const int trails, const std::vector<int>& bits, const std:
                     parser.addScore(time, alg);
                 }
 
-                std::cout << "Bits: " << bit_num << "; " << i + 1 << "/" << trails << std::endl;
+                std::cout << "[SUCCESS] Bits: " << bit_num << "; " << i + 1 << "/" << trails << std::endl;
                 i++;  // iteracja zakończona sukcesem
 
             } catch (const std::exception& exception) {
-                std::cerr << "[ERROR]: " << exception.what() << " - repeating iteration..." << std::endl;
+                std::cerr << "[ERROR] " << exception.what() << " - repeating iteration..." << std::endl;
                 // Nie dodajemy żadnych wyników, iteracja powtarzana
             }
         }
