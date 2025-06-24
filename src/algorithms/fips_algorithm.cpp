@@ -1,7 +1,5 @@
 #include "fips_algorithm.h"
 
-#include <iostream>
-
 #include "montgomery_algorithm.h"
 #include "../util/binary_helper.h"
 

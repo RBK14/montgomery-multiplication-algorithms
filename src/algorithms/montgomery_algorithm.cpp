@@ -51,7 +51,6 @@ std::tuple<int, int128_t, int128_t> MontgomeryAlgorithm::prepare(const int128_t 
          r_inv = modInverse(r, n);
     } catch (const std::exception &e) {
         throw std::runtime_error(e.what());
-        r_inv = 0;
     }
 
     // Obliczanie n_prime ze wzoru: r * r^(-1) - n * n' = 1
@@ -83,7 +82,7 @@ int128_t MontgomeryAlgorithm::gcdExtended(const int128_t a, const int128_t b, in
     int128_t x1, y1;
     const int128_t gcd = gcdExtended(b % a, a, x1, y1);
 
-    x = y1 - static_cast<int128_t>(b / a) * x1;
+    x = y1 - b / a * x1;
     y = x1;
 
     return gcd;

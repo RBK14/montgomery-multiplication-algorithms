@@ -11,7 +11,8 @@
 
 enum class Algorithm {
     FIPS,
-    SOS
+    SOS,
+    MONPRO
 };
 
 class ResultParser {

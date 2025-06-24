@@ -27,6 +27,7 @@ public:
 
     static bool validate(int128_t number, const std::vector<int>& binary_vector);
 
+    static bool validate(const std::vector<int>& a, const std::vector<int>& b);
 };
 
 #endif //BINARY_HELPER_H
